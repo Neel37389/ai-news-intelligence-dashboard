@@ -31,8 +31,12 @@ export default function ArticlesPage() {
     }
   };
 
-  const filteredArticles = articles.filter((article) =>
-    article.title.toLowerCase().includes(searchTerm.toLowerCase()),
+  const term = searchTerm.trim().toLocaleLowerCase();
+
+  const filteredArticles = articles.filter(
+    (article) =>
+      article.title.toLowerCase().includes(term) ||
+      article.source.toLowerCase().includes(term),
   );
 
   const ArticleList = ({ item, savedIds, toggleSave }) => {
@@ -57,18 +61,22 @@ export default function ArticlesPage() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       ></input>
-      <ul>
-        {filteredArticles.map((item) => {
-          return (
-            <ArticleList
-              key={item.id}
-              item={item}
-              savedIds={savedIds}
-              toggleSave={toggleSave}
-            />
-          );
-        })}
-      </ul>
+      {filteredArticles.length === 0 ? (
+        <p>No Found</p>
+      ) : (
+        <ul>
+          {filteredArticles.map((item) => {
+            return (
+              <ArticleList
+                key={item.id}
+                item={item}
+                savedIds={savedIds}
+                toggleSave={toggleSave}
+              />
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }
