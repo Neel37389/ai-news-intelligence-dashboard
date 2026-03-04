@@ -3,7 +3,8 @@
 import { useState } from "react";
 
 export default function ArticlesPage() {
-  const [saved, setSaved] = useState([]);
+  const [savedIds, setSavedIds] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const articles = [
     {
       id: 1,
@@ -23,29 +24,59 @@ export default function ArticlesPage() {
   ];
 
   const toggleSave = (id) => {
-    if (saved.includes(id)) setSaved(saved.filter((item) => item !== id));
+    if (savedIds.includes(id))
+      setSavedIds(savedIds.filter((item) => item !== id));
     else {
-      setSaved([...saved, id]);
+      setSavedIds([...savedIds, id]);
     }
+  };
+
+  const filteredArticles = articles.filter((article) =>
+    article.title.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const ArticleList = ({ item, savedIds, toggleSave }) => {
+    return (
+      <li>
+        <div>
+          <h1>{item.title}</h1>
+          <p>{item.source}</p>
+        </div>
+        <button onClick={() => toggleSave(item.id)}>
+          {savedIds.includes(item.id) ? "Saved" : "Save"}
+        </button>
+      </li>
+    );
   };
 
   return (
     <div>
+      <input
+        className="bg-muted"
+        placeholder="enter title..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      ></input>
       <ul>
-        {articles.map((item) => {
+        {filteredArticles.map((item) => {
           return (
-            <li key={item.id}>
-              <div>
-                <h1>{item.title}</h1>
-                <p>{item.source}</p>
-              </div>
-              <button onClick={() => toggleSave(item.id)}>
-                {saved.includes(item.id) ? "Saved" : "Save"}
-              </button>
-            </li>
+            <ArticleList
+              key={item.id}
+              item={item}
+              savedIds={savedIds}
+              toggleSave={toggleSave}
+            />
           );
         })}
       </ul>
     </div>
   );
 }
+
+const toggleItem = (item) => {
+  if (item.includes(item)) {
+    setItems(items.filter((i) => i !== item));
+  } else {
+    setItems([...items, item]);
+  }
+};
