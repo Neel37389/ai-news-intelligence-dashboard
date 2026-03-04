@@ -18,6 +18,8 @@ export default function DashboardLayout({ children }) {
     { name: "Saved", href: "/dashboard/saved", icon: Bookmark },
   ];
 
+  const currentName = navItems.find((item) => item.href === pathname);
+
   return (
     <div className="min-h-screen flex bg-background text-foreground">
       {/* Sidebar */}
@@ -65,7 +67,7 @@ export default function DashboardLayout({ children }) {
       {/* Main */}
       <div className="flex-1 flex flex-col">
         <header className="h-14 border-b border-border flex items-center px-6 font-medium">
-          AI News Intelligence Dashboard
+          {currentName?.name}
         </header>
 
         <main className="flex-1 p-6">{children}</main>
