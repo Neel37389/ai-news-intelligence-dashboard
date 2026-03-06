@@ -51,7 +51,7 @@ export const ArticlesClient = () => {
       {filteredArticles.length === 0 && searchTerm.trim() !== "" ? (
         <p>{`No results for ${searchTerm}`}</p>
       ) : (
-        <ul>
+        <ul className="space-y-4 items-start grid gitd-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredArticles.map((item) => {
             return (
               <ArticleItem
