@@ -6,7 +6,11 @@ import { articles } from "@/data/articles";
 import { ArticleItem } from "@/components/ArticleItem";
 
 export default function SavedPage() {
-  const { savedIds } = useContext(SavedArticlesContext);
+  const { savedIds, setSavedIds } = useContext(SavedArticlesContext);
+
+  const toggleSave = (id) => {
+    setSavedIds((prev) => prev.filter((item) => item !== id));
+  };
 
   const savedArticels = articles.filter((articels) =>
     savedIds.includes(articels.id),
@@ -23,7 +27,7 @@ export default function SavedPage() {
               key={item.id}
               item={item}
               savedIds={savedIds}
-              toggleSave={() => {}}
+              toggleSave={toggleSave}
             />
           ))}
         </ul>

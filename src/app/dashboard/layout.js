@@ -49,7 +49,16 @@ export default function DashboardLayout({ children }) {
                   className={`w-full flex items-center gap-3 justify-start text-lg px-3 py-2 rounded-md transition-colors ${isActive ? "bg-muted text-foreground font-semibold" : "hover:bg-muted/80 text-muted-foreground"}`}
                 >
                   <Icon className="h-5 w-5" />
-                  {!collapsed && item.name}
+                  {!collapsed && (
+                    <>
+                      {item.name}
+                      {item.name === "Saved" && (
+                        <span className="ml-auto text-xs bg-muted px-2 py-0.5 rounded">
+                          {savedIds.length}
+                        </span>
+                      )}
+                    </>
+                  )}
                 </button>
               </Link>
             );
