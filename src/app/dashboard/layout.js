@@ -1,14 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { SavedArticlesContext } from "@/context/SavedArticlesContext";
 import { Separator } from "@/components/ui/separator";
 import { LayoutDashboard, Newspaper, BarChart3, Bookmark } from "lucide-react";
 
 export default function DashboardLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [savedIds, setSavedIds] = useState([]);
   const pathname = usePathname();
 
   const navItems = [
@@ -70,7 +73,11 @@ export default function DashboardLayout({ children }) {
           {currentName?.name}
         </header>
 
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-6">
+          <SavedArticlesContext value={{ savedIds, setSavedIds }}>
+            {children}
+          </SavedArticlesContext>
+        </main>
       </div>
     </div>
   );

@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { ArticleItem } from "./ArticleItem";
+import { useContext } from "react";
+import { SavedArticlesContext } from "@/context/SavedArticlesContext";
+import { useState } from "react";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
 
 export const ArticlesClient = () => {
-  const [savedIds, setSavedIds] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const { savedIds, setSavedIds } = useContext(SavedArticlesContext);
   const articles = [
     {
       id: 1,
@@ -28,9 +30,9 @@ export const ArticlesClient = () => {
 
   const toggleSave = (id) => {
     if (savedIds.includes(id))
-      setSavedIds(savedIds.filter((item) => item !== id));
+      setSavedIds((prev) => prev.filter((item) => item !== id));
     else {
-      setSavedIds([...savedIds, id]);
+      setSavedIds((prev) => [...prev, id]);
     }
   };
 
@@ -47,8 +49,8 @@ export const ArticlesClient = () => {
       <div className=" relative max-w-md mb-6">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          className="bg-muted"
-          placeholder="     seach by title or source"
+          className="bg-muted pl-9"
+          placeholder="seach by title or source"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         ></Input>
@@ -56,7 +58,7 @@ export const ArticlesClient = () => {
       {filteredArticles.length === 0 && searchTerm.trim() !== "" ? (
         <p>{`No results for ${searchTerm}`}</p>
       ) : (
-        <ul className="space-y-4 items-start grid gitd-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <ul className="space-y-4 items-start grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredArticles.map((item) => {
             return (
               <ArticleItem

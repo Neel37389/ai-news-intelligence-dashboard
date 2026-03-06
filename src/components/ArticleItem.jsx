@@ -11,7 +11,7 @@ import { Badge } from "./ui/badge";
 
 export const ArticleItem = ({ item, savedIds, toggleSave }) => {
   return (
-    <Card className="transition hover:shadow-md h-full flex flex-col">
+    <Card className="transition hover:shadow-md h-full flex flex-col group">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>{item.title}</CardTitle>
@@ -22,7 +22,11 @@ export const ArticleItem = ({ item, savedIds, toggleSave }) => {
         <CardDescription>{`Source: ${item.source}`}</CardDescription>
       </CardHeader>
       <CardFooter className="mt-auto">
-        <Button onClick={() => toggleSave(item.id)}>
+        <Button
+          variant="secondary"
+          className="group-hover:bg-accent transition-colors"
+          onClick={() => toggleSave(item.id)}
+        >
           {savedIds.includes(item.id) ? "Unsave" : "Save"}
         </Button>
       </CardFooter>
