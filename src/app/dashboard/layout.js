@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useEffect } from "react";
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,6 +13,18 @@ import { LayoutDashboard, Newspaper, BarChart3, Bookmark } from "lucide-react";
 export default function DashboardLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
   const [savedIds, setSavedIds] = useState([]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("savedArticles");
+    if (stored) {
+      setSavedIds(JSON.parse(stored));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("savedArticles", JSON.stringify(savedIds));
+  }, [savedIds]);
+
   const pathname = usePathname();
 
   const navItems = [
