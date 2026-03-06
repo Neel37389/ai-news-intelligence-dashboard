@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { ArticleItem } from "./ArticleItem";
+import { Input } from "./ui/input";
+import { Search } from "lucide-react";
 
 export const ArticlesClient = () => {
   const [savedIds, setSavedIds] = useState([]);
@@ -42,12 +44,15 @@ export const ArticlesClient = () => {
 
   return (
     <div>
-      <input
-        className="bg-muted"
-        placeholder="enter title..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      ></input>
+      <div className=" relative max-w-md mb-6">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          className="bg-muted"
+          placeholder="     seach by title or source"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        ></Input>
+      </div>
       {filteredArticles.length === 0 && searchTerm.trim() !== "" ? (
         <p>{`No results for ${searchTerm}`}</p>
       ) : (
