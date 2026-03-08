@@ -14,4 +14,14 @@ export const articles = [
     title: "How AI Is Transforming Financial Markets",
     source: "Bloomberg",
   },
+  {
+    id: 4,
+    title: "Open-Source LLMs Gaining Enterprise Adoption",
+    source: "CNN",
+  },
+  {
+    id: 5,
+    title: "How AI Is Transforming Financial Markets",
+    source: "Fox",
+  },
 ];
