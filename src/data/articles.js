@@ -3,25 +3,24 @@ export const articles = [
     id: 1,
     title: "AI Breakthrough in Medical Diagnosis",
     source: "TechCrunch",
+    publishedAt: "2026-03-07T10:00:00Z",
+    summary:
+      "New AI models are improving diagnostic accuracy in radiology and oncology, helping doctors detect diseases earlier.",
   },
   {
     id: 2,
     title: "Open-Source LLMs Gaining Enterprise Adoption",
     source: "The Verge",
+    publishedAt: "2026-03-06T14:30:00Z",
+    summary:
+      "Companies are increasingly adopting open-source large language models to reduce costs and maintain control over their data.",
   },
   {
     id: 3,
     title: "How AI Is Transforming Financial Markets",
     source: "Bloomberg",
-  },
-  {
-    id: 4,
-    title: "Open-Source LLMs Gaining Enterprise Adoption",
-    source: "CNN",
-  },
-  {
-    id: 5,
-    title: "How AI Is Transforming Financial Markets",
-    source: "Fox",
+    publishedAt: "2026-03-05T09:15:00Z",
+    summary:
+      "AI-powered algorithms are changing how traders analyze markets, manage risk, and execute strategies.",
   },
 ];
