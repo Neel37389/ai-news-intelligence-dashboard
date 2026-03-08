@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useEffect } from "react";
+import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -44,7 +45,14 @@ export default function DashboardLayout({ children }) {
           collapsed ? "w-20" : "w-64"
         } transition-all duration-300 border-r border-border flex flex-col`}
       >
-        <div className="h-14 flex items-center px-4 font-semibold">
+        <div className="h-14 flex items-center gap-3 px-3 font-semibold">
+          <Image
+            src="/icon.png"
+            alt="AI News Logo"
+            width={20}
+            height={20}
+            className="invert"
+          />
           {!collapsed && "AI News"}
         </div>
 
@@ -96,9 +104,9 @@ export default function DashboardLayout({ children }) {
         </header>
 
         <main className="flex-1 p-6">
-          <SavedArticlesContext value={{ savedIds, setSavedIds }}>
+          <SavedArticlesContext.Provider value={{ savedIds, setSavedIds }}>
             {children}
-          </SavedArticlesContext>
+          </SavedArticlesContext.Provider>
         </main>
       </div>
     </div>
