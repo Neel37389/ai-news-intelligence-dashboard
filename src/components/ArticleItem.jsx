@@ -12,21 +12,33 @@ import { Badge } from "./ui/badge";
 
 export const ArticleItem = ({ item, savedIds, toggleSave }) => {
   const formatedDate = new Date(item.publishedAt).toLocaleDateString();
+
   return (
-    <Card className="transition hover:shadow-md h-full flex flex-col group">
-      <CardHeader>
+    <Card className="bg-card border-border hover:border-accent transition hover:shadow-lg h-full flex flex-col group">
+      <CardHeader className="space-y-2">
         <div className="flex items-start justify-between gap-2">
-          <CardTitle className="line-clamp-2">{item.title}</CardTitle>
+          <CardTitle className="line-clamp-2 text-base">{item.title}</CardTitle>
+
           {savedIds.includes(item.id) && (
-            <Badge variant="secondary" className="shrink-0">
+            <Badge
+              variant="secondary"
+              className="shrink-0 bg-accent text-accent-foreground"
+            >
               Saved
             </Badge>
           )}
         </div>
-        <CardDescription>{`Source: ${item.source} • ${formatedDate}`}</CardDescription>
+
+        <CardDescription className="text-muted-foreground text-xs">
+          {`${item.source} • ${formatedDate}`}
+        </CardDescription>
       </CardHeader>
-      <CardContent>{item.summary}</CardContent>
-      <CardFooter className="mt-auto">
+
+      <CardContent className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+        {item.summary}
+      </CardContent>
+
+      <CardFooter className="mt-auto pt-4">
         <Button
           variant="secondary"
           className="group-hover:bg-accent transition-colors"

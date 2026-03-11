@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
@@ -17,9 +16,7 @@ export default function DashboardLayout({ children }) {
 
   useEffect(() => {
     const stored = localStorage.getItem("savedArticles");
-    if (stored) {
-      setSavedIds(JSON.parse(stored));
-    }
+    if (stored) setSavedIds(JSON.parse(stored));
   }, []);
 
   useEffect(() => {
@@ -43,8 +40,9 @@ export default function DashboardLayout({ children }) {
       <aside
         className={`${
           collapsed ? "w-20" : "w-64"
-        } transition-all duration-300 border-r border-border flex flex-col`}
+        } bg-sidebar text-sidebar-foreground transition-all duration-300 border-r border-sidebar-border flex flex-col`}
       >
+        {/* Logo */}
         <div className="h-14 flex items-center gap-3 px-3 font-semibold">
           <Image
             src="/icon.png"
@@ -58,7 +56,8 @@ export default function DashboardLayout({ children }) {
 
         <Separator />
 
-        <nav className="flex flex-col gap-2 p-3">
+        {/* Navigation */}
+        <nav className="flex flex-col gap-1 p-3">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -66,15 +65,21 @@ export default function DashboardLayout({ children }) {
             return (
               <Link key={item.href} href={item.href}>
                 <button
-                  variant={isActive ? "secondary" : "ghost"}
-                  className={`w-full flex items-center gap-3 justify-start text-lg px-3 py-2 rounded-md transition-colors ${isActive ? "bg-muted text-foreground font-semibold" : "hover:bg-muted/80 text-muted-foreground"}`}
+                  className={`w-full flex items-center gap-3 justify-start text-sm px-3 py-2 rounded-lg transition-colors
+                  ${
+                    isActive
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                      : "hover:bg-sidebar-accent text-sidebar-foreground"
+                  }`}
                 >
                   <Icon className="h-5 w-5" />
+
                   {!collapsed && (
                     <>
                       {item.name}
-                      {item.name === "Saved" && (
-                        <span className="ml-auto text-xs bg-muted px-2 py-0.5 rounded">
+
+                      {item.name === "Saved" && savedIds.length > 0 && (
+                        <span className="ml-auto text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-md">
                           {savedIds.length}
                         </span>
                       )}
@@ -86,10 +91,11 @@ export default function DashboardLayout({ children }) {
           })}
         </nav>
 
+        {/* Collapse button */}
         <div className="mt-auto p-3">
           <Button
-            variant="outline"
-            className="w-full"
+            variant="secondary"
+            className="w-full transition hover:bg-accent"
             onClick={() => setCollapsed((prev) => !prev)}
           >
             {collapsed ? ">" : "<"}
@@ -99,7 +105,7 @@ export default function DashboardLayout({ children }) {
 
       {/* Main */}
       <div className="flex-1 flex flex-col">
-        <header className="h-14 border-b border-border flex items-center px-6 font-medium">
+        <header className="h-14 border-b border-border bg-card flex items-center px-6 font-medium">
           {currentName?.name}
         </header>
 
