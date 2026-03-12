@@ -9,9 +9,10 @@ import {
 
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
+import { formatTimeAgo } from "@/lib/dateUtils";
 
 export const ArticleItem = ({ item, savedIds, toggleSave }) => {
-  const formatedDate = new Date(item.publishedAt).toLocaleDateString();
+  const formatedDate = formatTimeAgo(item.publishedAt);
 
   return (
     <Card className="bg-card border-border hover:border-accent transition hover:shadow-lg h-full flex flex-col group">
