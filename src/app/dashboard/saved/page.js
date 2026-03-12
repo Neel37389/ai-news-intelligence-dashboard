@@ -5,6 +5,7 @@ import { SavedArticlesContext } from "@/context/SavedArticlesContext";
 import { articles } from "@/data/articles";
 import { ArticleItem } from "@/components/ArticleItem";
 import { Button } from "@/components/ui/button";
+import { EmptySavedState } from "@/components/EmptySavedState";
 
 export default function SavedPage() {
   const { savedIds, setSavedIds } = useContext(SavedArticlesContext);
@@ -30,7 +31,7 @@ export default function SavedPage() {
           )}
         </div>
         {savedArticles.length === 0 ? (
-          <p>No saved articles yet.</p>
+          <EmptySavedState className="mt-4" />
         ) : (
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {savedArticles.map((item) => (

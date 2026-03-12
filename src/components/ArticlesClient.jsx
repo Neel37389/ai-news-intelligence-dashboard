@@ -6,6 +6,7 @@ import { articles } from "@/data/articles";
 import { SavedArticlesContext } from "@/context/SavedArticlesContext";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
+import { EmptySavedState } from "./EmptySavedState";
 
 export const ArticlesClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,8 +23,8 @@ export const ArticlesClient = () => {
   const filteredArticles = articles.filter(
     (article) =>
       article.title.toLowerCase().includes(term) ||
-      article.source.toLowerCase().includes(term),
-    article.summary.toLowerCase().includes(term),
+      article.source.toLowerCase().includes(term) ||
+      article.summary.toLowerCase().includes(term),
   );
 
   return (
