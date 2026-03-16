@@ -36,6 +36,17 @@ export const ArticleItem = ({ item, savedIds, toggleSave }) => {
       </CardHeader>
 
       <CardContent className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+        <div className="flex gap-2 flex-wrap">
+          {item.tags.map((tag) => (
+            <Badge
+              key={tag}
+              variant="secondary"
+              className="bg-muted text-accent-foreground"
+            >
+              {tag}
+            </Badge>
+          ))}
+        </div>
         {item.summary}
       </CardContent>
 
