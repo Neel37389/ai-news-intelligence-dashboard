@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI News Intelligence Dashboard
 
-## Getting Started
+A modern AI-powered news dashboard that allows users to search, save, and analyze trending AI articles with a clean SaaS-style interface.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- 🔍 Search articles by title or source
+- ⭐ Save / unsave articles
+- 📊 Dashboard analytics (topics, sources)
+- 📱 Fully responsive design
+- 💾 Persistent state using localStorage
+- 🎨 Modern UI with shadcn + Tailwind
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- Next.js (App Router)
+- React
+- Tailwind CSS
+- shadcn/ui
+- Context API
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Development Phases
 
-## Learn More
+### Phase 1: Frontend (Completed)
+- Built dashboard layout
+- Implemented article search and filtering
+- Created save/unsave functionality
+- Designed responsive UI
+- Added analytics overview
 
-To learn more about Next.js, take a look at the following resources:
+### Phase 2: Backend (Upcoming)
+- Integrate real news API
+- Integrate OpenAI API
+- Add database (Supabase)
+- Implement authentication
+- Store user-specific data
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#Phase 1: Screenshots
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+<img width="1510" height="762" alt="Screenshot 2026-03-18 at 5 36 12 PM" src="https://github.com/user-attachments/assets/b7cd59a9-6efe-415c-a84b-c86420422c2f" />
+<img width="1512" height="763" alt="Screenshot 2026-03-18 at 5 40 04 PM" src="https://github.com/user-attachments/assets/f7ef04cf-ddcc-4683-a20c-35605437bbe5" />
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
