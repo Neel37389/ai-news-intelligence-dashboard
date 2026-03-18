@@ -2,17 +2,31 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { SavedArticlesContext } from "@/context/SavedArticlesContext";
 import { Separator } from "@/components/ui/separator";
-import { LayoutDashboard, Newspaper, BarChart3, Bookmark } from "lucide-react";
+import {
+  LayoutDashboard,
+  Newspaper,
+  BarChart3,
+  Bookmark,
+  ChevronDown,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function DashboardLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
   const [savedIds, setSavedIds] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     const stored = localStorage.getItem("savedArticles");
@@ -28,7 +42,6 @@ export default function DashboardLayout({ children }) {
   const navItems = [
     { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
     { name: "Articles", href: "/dashboard/articles", icon: Newspaper },
-    { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
     { name: "Saved", href: "/dashboard/saved", icon: Bookmark },
   ];
 
@@ -40,7 +53,7 @@ export default function DashboardLayout({ children }) {
       <aside
         className={`${
           collapsed ? "w-20" : "w-64"
-        } bg-sidebar text-sidebar-foreground transition-all duration-300 border-r border-sidebar-border flex flex-col`}
+        } hidden sm:flex bg-sidebar text-sidebar-foreground transition-all duration-300 border-r border-sidebar-border flex flex-col sm:w-64`}
       >
         {/* Logo */}
         <div className="h-14 flex items-center gap-3 px-3 font-semibold">
@@ -68,7 +81,7 @@ export default function DashboardLayout({ children }) {
                   className={`w-full flex items-center gap-3 justify-start text-sm px-3 py-2 rounded-lg transition-colors
                   ${
                     isActive
-                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                      ? "bg-primary text-sidebar-primary-foreground"
                       : "hover:bg-sidebar-accent text-sidebar-foreground"
                   }`}
                 >
@@ -105,11 +118,35 @@ export default function DashboardLayout({ children }) {
 
       {/* Main */}
       <div className="flex-1 flex flex-col">
-        <header className="h-14 border-b border-border bg-card flex items-center px-6 font-medium">
-          {currentName?.name}
+        <header className="h-14 border-b border-border bg-card flex items-center px-3 sm:px-6 font-medium">
+          {/* Mobile Dropdown */}
+          <div className="sm:hidden w-full">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  <span>{currentName?.name}</span>
+                  <ChevronDown>
+                    className="h-4 w-4 opacity-60 transition-transform
+                    data-[state=open]:rotate-180"
+                  </ChevronDown>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-full">
+                {navItems.map((item) => (
+                  <DropdownMenuItem
+                    key={item.href}
+                    onClick={() => router.push(item.href)}
+                  >
+                    {item.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          {/* Desktop Header */}
+          <div className="hidden sm:block">{currentName?.name}</div>
         </header>
-
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-3 sm:p-6">
           <SavedArticlesContext.Provider value={{ savedIds, setSavedIds }}>
             {children}
           </SavedArticlesContext.Provider>
