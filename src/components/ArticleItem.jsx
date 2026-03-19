@@ -20,7 +20,7 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { formatTimeAgo } from "@/lib/dateUtils";
 
-export const ArticleItem = ({ item, savedIds, toggleSave }) => {
+export const ArticleItem = ({ item, savedArticles, toggleSave }) => {
   const formatedDate = formatTimeAgo(item.publishedAt);
 
   return (
@@ -33,7 +33,7 @@ export const ArticleItem = ({ item, savedIds, toggleSave }) => {
                 {item.title}
               </CardTitle>
 
-              {savedIds.includes(item.id) && (
+              {savedArticles.some((a) => a.id === item.id) && (
                 <Badge
                   variant="secondary"
                   className="shrink-0 bg-accent text-accent-foreground"
@@ -69,10 +69,10 @@ export const ArticleItem = ({ item, savedIds, toggleSave }) => {
               className="group-hover:bg-accent transition-colors"
               onClick={(e) => {
                 e.stopPropagation();
-                toggleSave(item.id);
+                toggleSave(item);
               }}
             >
-              {savedIds.includes(item.id) ? "Unsave" : "Save"}
+              {savedArticles.some((a) => a.id === item.id) ? "Unsave" : "Save"}
             </Button>
           </CardFooter>
         </Card>
@@ -101,10 +101,10 @@ export const ArticleItem = ({ item, savedIds, toggleSave }) => {
           className="transition-colors"
           onClick={(e) => {
             e.stopPropagation();
-            toggleSave(item.id);
+            toggleSave(item);
           }}
         >
-          {savedIds.includes(item.id) ? "Unsave" : "Save"}
+          {savedArticles.some((a) => a.id === item.id) ? "Unsave" : "Save"}
         </Button>
       </DialogContent>
     </Dialog>

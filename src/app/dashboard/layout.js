@@ -25,17 +25,17 @@ import {
 
 export default function DashboardLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [savedIds, setSavedIds] = useState([]);
+  const [savedArticles, setSavedArticles] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
     const stored = localStorage.getItem("savedArticles");
-    if (stored) setSavedIds(JSON.parse(stored));
+    if (stored) setSavedArticles(JSON.parse(stored));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("savedArticles", JSON.stringify(savedIds));
-  }, [savedIds]);
+    localStorage.setItem("savedArticles", JSON.stringify(savedArticles));
+  }, [savedArticles]);
 
   const pathname = usePathname();
 
@@ -51,9 +51,14 @@ export default function DashboardLayout({ children }) {
     <div className="min-h-screen flex bg-background text-foreground">
       {/* Sidebar */}
       <aside
-        className={`${
-          collapsed ? "w-20" : "w-64"
-        } hidden sm:flex bg-sidebar text-sidebar-foreground transition-all duration-300 border-r border-sidebar-border flex flex-col sm:w-64`}
+        className={`
+    ${collapsed ? "sm:w-20" : "sm:w-64"}
+    hidden sm:flex
+    bg-sidebar text-sidebar-foreground
+    transition-all duration-300
+    border-r border-sidebar-border
+    flex flex-col
+  `}
       >
         {/* Logo */}
         <div className="h-14 flex items-center gap-3 px-3 font-semibold">
@@ -91,9 +96,9 @@ export default function DashboardLayout({ children }) {
                     <>
                       {item.name}
 
-                      {item.name === "Saved" && savedIds.length > 0 && (
+                      {item.name === "Saved" && savedArticles.length > 0 && (
                         <span className="ml-auto text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-md">
-                          {savedIds.length}
+                          {savedArticles.length}
                         </span>
                       )}
                     </>
@@ -125,10 +130,7 @@ export default function DashboardLayout({ children }) {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
                   <span>{currentName?.name}</span>
-                  <ChevronDown>
-                    className="h-4 w-4 opacity-60 transition-transform
-                    data-[state=open]:rotate-180"
-                  </ChevronDown>
+                  <ChevronDown className="h-4 w-4 opacity-60 transition-transform data-[state=open]:rotate-180" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-full">
@@ -147,7 +149,9 @@ export default function DashboardLayout({ children }) {
           <div className="hidden sm:block">{currentName?.name}</div>
         </header>
         <main className="flex-1 p-3 sm:p-6">
-          <SavedArticlesContext.Provider value={{ savedIds, setSavedIds }}>
+          <SavedArticlesContext.Provider
+            value={{ savedArticles, setSavedArticles }}
+          >
             {children}
           </SavedArticlesContext.Provider>
         </main>

@@ -1,20 +1,31 @@
 "use client";
 
 import { ArticleItem } from "./ArticleItem";
-import { useContext, useState } from "react";
-import { articles } from "@/data/articles";
+import { useContext, useState, useEffect } from "react";
+import { fetchArticles } from "@/lib/api";
 import { SavedArticlesContext } from "@/context/SavedArticlesContext";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
 
 export const ArticlesClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const { savedIds, setSavedIds } = useContext(SavedArticlesContext);
+  const { savedArticles, setSavedArticles } = useContext(SavedArticlesContext);
+  const [articles, setArticles] = useState([]);
 
-  const toggleSave = (id) => {
-    if (savedIds.includes(id))
-      setSavedIds((prev) => prev.filter((item) => item !== id));
-    else setSavedIds((prev) => [...prev, id]);
+  useEffect(() => {
+    fetchArticles().then((data) => {
+      setArticles(data);
+    });
+  }, []);
+
+  const toggleSave = (item) => {
+    const exists = savedArticles.some((a) => a.id === item.id);
+
+    if (exists) {
+      setSavedArticles((prev) => prev.filter((a) => a.id !== item.id));
+    } else {
+      setSavedArticles((prev) => [...prev, item]);
+    }
   };
 
   const term = searchTerm.trim().toLowerCase();
@@ -40,7 +51,7 @@ export const ArticlesClient = () => {
         />
       </div>
 
-      {/* Empty search state */}
+      {/* Empty state */}
       {filteredArticles.length === 0 && searchTerm.trim() !== "" ? (
         <div className="flex items-center justify-center h-40 rounded-lg border border-border bg-card">
           <p className="text-sm text-muted-foreground">
@@ -53,7 +64,7 @@ export const ArticlesClient = () => {
             <ArticleItem
               key={item.id}
               item={item}
-              savedIds={savedIds}
+              savedArticles={savedArticles}
               toggleSave={toggleSave}
             />
           ))}

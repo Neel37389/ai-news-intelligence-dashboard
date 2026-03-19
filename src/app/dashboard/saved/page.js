@@ -2,24 +2,20 @@
 
 import { useContext } from "react";
 import { SavedArticlesContext } from "@/context/SavedArticlesContext";
-import { articles } from "@/data/articles";
 import { ArticleItem } from "@/components/ArticleItem";
 import { Button } from "@/components/ui/button";
 import { EmptySavedState } from "@/components/EmptySavedState";
 
 export default function SavedPage() {
-  const { savedIds, setSavedIds } = useContext(SavedArticlesContext);
+  const { savedArticles, setSavedArticles } = useContext(SavedArticlesContext);
 
-  const toggleSave = (id) => {
-    setSavedIds((prev) => prev.filter((item) => item !== id));
+  const toggleSave = (item) => {
+    setSavedArticles((prev) => prev.filter((a) => a.id !== item.id));
   };
 
-  const savedArticles = articles.filter((articels) =>
-    savedIds.includes(articels.id),
-  );
+  const handleClear = () => setSavedArticles([]);
 
-  const handleClear = () => setSavedIds([]);
-
+  console.log(savedArticles);
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="flex justify-end items-center mb-6">
@@ -37,7 +33,7 @@ export default function SavedPage() {
             <ArticleItem
               key={item.id}
               item={item}
-              savedIds={savedIds}
+              savedArticles={savedArticles}
               toggleSave={toggleSave}
             />
           ))}
