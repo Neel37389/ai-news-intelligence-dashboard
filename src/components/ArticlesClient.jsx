@@ -6,18 +6,19 @@ import { fetchArticles } from "@/lib/api";
 import { SavedArticlesContext } from "@/context/SavedArticlesContext";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
+import { Button } from "./ui/button";
 
 export const ArticlesClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { savedArticles, setSavedArticles } = useContext(SavedArticlesContext);
   const [articles, setArticles] = useState([]);
 
-  useEffect(() => {
-    fetchArticles().then((data) => {
+  const handleSearch = () => {
+    if (!searchTerm.trim()) return;
+    fetchArticles(searchTerm).then((data) => {
       setArticles(data);
     });
-  }, []);
-
+  };
   const toggleSave = (item) => {
     const exists = savedArticles.some((a) => a.id === item.id);
 
@@ -30,17 +31,12 @@ export const ArticlesClient = () => {
 
   const term = searchTerm.trim().toLowerCase();
 
-  const filteredArticles = articles.filter(
-    (article) =>
-      article.title.toLowerCase().includes(term) ||
-      article.source.toLowerCase().includes(term) ||
-      article.summary.toLowerCase().includes(term),
-  );
+  const filteredArticles = articles;
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Search */}
-      <div className="relative max-w-md">
+      <div className="relative max-w-md flex gap-3">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 
         <Input
@@ -49,6 +45,7 @@ export const ArticlesClient = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <Button onClick={handleSearch}>Search Article</Button>
       </div>
 
       {/* Empty state */}

@@ -1,6 +1,5 @@
 "use client";
 
-import { articles } from "@/data/articles";
 import { SavedArticlesContext } from "@/context/SavedArticlesContext";
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 import { useContext } from "react";
@@ -14,18 +13,16 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 
 export default function DashboardHome() {
-  const { savedIds } = useContext(SavedArticlesContext);
+  const { savedArticles } = useContext(SavedArticlesContext);
 
-  const totalSavedArticles = savedIds.length;
+  const totalSavedArticles = savedArticles.length;
 
-  const savedArticles = articles.filter((article) =>
-    savedIds.includes(article.id),
-  );
+  const saveArticles = savedArticles;
 
-  const savedSources = savedArticles.map((article) => article.source);
+  const savedSources = saveArticles.map((article) => article.source);
   const uniqueSources = [...new Set(savedSources)];
 
-  const allTopics = savedArticles.flatMap((article) => article.tags);
+  const allTopics = saveArticles.flatMap((article) => article.tags);
 
   const topicCount = {};
   allTopics.forEach((topic) => {
