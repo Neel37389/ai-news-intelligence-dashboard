@@ -37,9 +37,27 @@ export const ArticlesClient = () => {
 
   const filteredArticles = articles;
 
-  if (loading) {
-    return (
-      <div>
+  return (
+    <div className="max-w-6xl mx-auto space-y-6">
+      {/* Search */}
+      <div className="relative max-w-md flex gap-3">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          className="pl-9 bg-muted border-border focus-visible:ring-primary"
+          placeholder="Search by title or source"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
+        />
+        <Button onClick={handleSearch} disabled={loading}>
+          {loading ? "Searching..." : "Search Article"}
+        </Button>
+      </div>
+      {loading ? (
         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <li key={i} className="space-y-3 p-4 border rounded-lg">
@@ -55,26 +73,7 @@ export const ArticlesClient = () => {
             </li>
           ))}
         </ul>
-      </div>
-    );
-  }
-
-  return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      {/* Search */}
-      <div className="relative max-w-md flex gap-3">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-
-        <Input
-          className="pl-9 bg-muted border-border focus-visible:ring-primary"
-          placeholder="Search by title or source"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <Button onClick={handleSearch}>Search Article</Button>
-      </div>
-      {/* Empty state */}
-      {filteredArticles.length === 0 && searchTerm.trim() !== "" ? (
+      ) : filteredArticles.length === 0 && searchTerm.trim() !== "" ? (
         <div className="flex items-center justify-center h-40 rounded-lg border border-border bg-card">
           <p className="text-sm text-muted-foreground">
             No results for <span className="font-medium">{searchTerm}</span>
