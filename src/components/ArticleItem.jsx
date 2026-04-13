@@ -63,7 +63,7 @@ export const ArticleItem = ({ item, savedArticles, toggleSave }) => {
             {item.summary}
           </CardContent>
 
-          <CardFooter className="mt-auto pt-4">
+          <CardFooter className="mt-auto pt-4 justify-between">
             <Button
               variant="secondary"
               className="group-hover:bg-accent transition-colors"
@@ -73,6 +73,16 @@ export const ArticleItem = ({ item, savedArticles, toggleSave }) => {
               }}
             >
               {savedArticles.some((a) => a.id === item.id) ? "Unsave" : "Save"}
+            </Button>
+            <Button
+              variant="secondary"
+              className="group-hover:bg-accent transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(item.id, "_blank");
+              }}
+            >
+              Read Full Article
             </Button>
           </CardFooter>
         </Card>
