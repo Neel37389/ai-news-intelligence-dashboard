@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import SavedPage from "@/app/dashboard/saved/page";
 import { SavedArticlesContext } from "@/context/SavedArticlesContext";
-// import { userEvent } from "@testing-library/user-event";
+import { userEvent } from "@testing-library/user-event";
 
 test("shows empty state when no saved articles", () => {
   render(
@@ -36,4 +36,32 @@ test("renders saved articles", () => {
 
   const article = screen.getByText("Saved Article");
   expect(article).toBeInTheDocument;
+});
+
+import userEvent from "@testing-library/user-event";
+
+test("clicking clear all removes all saved articles", async () => {
+  const setSavedArticles = jest.fn();
+
+  const mockArticles = [
+    {
+      id: "1",
+      title: "Saved Article",
+      source: "Test Source",
+      publishedAt: "2024",
+      summary: "Test summary",
+      tags: ["AI"],
+    },
+  ];
+
+  render(
+    <SavedArticlesContext.Provider
+      value={{ savedArticles: mockArticles, setSavedArticles }}
+    >
+      <SavedPage />
+    </SavedArticlesContext.Provider>,
+  );
+  const clearButton = screen.getByText("Clear All");
+  await userEvent.click(clearButton);
+  expect(setSavedArticles).toHaveBeenCalledWith([]);
 });
