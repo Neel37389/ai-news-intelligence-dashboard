@@ -23,12 +23,19 @@ export const ArticlesClient = () => {
     setLoading(false);
   };
 
-  const toggleSave = (item) => {
+  const toggleSave = async (item) => {
     const exists = savedArticles.some((a) => a.id === item.id);
 
     if (exists) {
       setSavedArticles((prev) => prev.filter((a) => a.id !== item.id));
     } else {
+      await fetch("/api/save-article", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(item),
+      });
       setSavedArticles((prev) => [...prev, item]);
     }
   };
