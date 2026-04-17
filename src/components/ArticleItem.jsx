@@ -19,9 +19,30 @@ import {
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { formatTimeAgo } from "@/lib/dateUtils";
+import { useState } from "react";
 
 export const ArticleItem = ({ item, savedArticles, toggleSave }) => {
   const formatedDate = formatTimeAgo(item.publishedAt);
+  const [aiSummary, setAiSummary] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSummarize = async () => {
+    setLoading(true);
+    const text = `
+    Title: ${item.title}
+    Description: ${item.summary}
+    `;
+    const res = await fetch("/api/summarize", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text }),
+    });
+    const data = await res.json();
+    setAiSummary(data.summary);
+    setLoading(false);
+  };
 
   return (
     <Dialog>
@@ -84,6 +105,7 @@ export const ArticleItem = ({ item, savedArticles, toggleSave }) => {
             >
               Read Full Article
             </Button>
+            <Button onClick={handleSummarize}>Summarize</Button>
           </CardFooter>
         </Card>
       </DialogTrigger>
@@ -106,6 +128,33 @@ export const ArticleItem = ({ item, savedArticles, toggleSave }) => {
         <p className="text-sm text-muted-foreground leading-relaxed">
           {item.summary}
         </p>
+        <div className="space-y-2">
+          <Button
+            variant="secondary"
+            onClick={handleSummarize}
+            disabled={loading || aiSummary}
+          >
+            {loading
+              ? "Generating..."
+              : aiSummary
+                ? "Summary Generated"
+                : "Summarize with AI"}
+          </Button>
+
+          {/* Loading */}
+          {loading && (
+            <p className="text-sm text-muted-foreground">
+              Generating summary...
+            </p>
+          )}
+
+          {/* AI result */}
+          {aiSummary && (
+            <div className="p-3 rounded-lg bg-muted text-sm leading-relaxed">
+              {aiSummary}
+            </div>
+          )}
+        </div>
         <Button
           variant="secondary"
           className="transition-colors"
