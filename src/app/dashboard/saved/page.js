@@ -1,13 +1,21 @@
 "use client";
 
-import { useContext } from "react";
-import { SavedArticlesContext } from "@/context/SavedArticlesContext";
 import { ArticleItem } from "@/components/ArticleItem";
 import { Button } from "@/components/ui/button";
 import { EmptySavedState } from "@/components/EmptySavedState";
+import { useState, useEffect } from "react";
 
 export default function SavedPage() {
-  const { savedArticles, setSavedArticles } = useContext(SavedArticlesContext);
+  const [articles, setArticles] = useState([]);
+
+  useEffect(() => {
+    const fetchSaved = async () => {
+      const res = await fetch("/api/saved-articles");
+      const data = await res.json();
+      setArticles(data.data);
+    };
+    fetchSaved();
+  }, []);
 
   const toggleSave = (item) => {
     setSavedArticles((prev) => prev.filter((a) => a.id !== item.id));
@@ -15,28 +23,35 @@ export default function SavedPage() {
 
   const handleClear = () => setSavedArticles([]);
 
-  console.log(savedArticles);
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="flex justify-end items-center mb-6">
-        {savedArticles.length > 0 && (
+        {articles.length > 0 && (
           <Button variant="outline" onClick={handleClear}>
             Clear All
           </Button>
         )}
       </div>
-      {savedArticles.length === 0 ? (
+      {articles.length === 0 ? (
         <EmptySavedState className="mt-4" />
       ) : (
         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {savedArticles.map((item) => (
-            <ArticleItem
-              key={item.id}
-              item={item}
-              savedArticles={savedArticles}
-              toggleSave={toggleSave}
-            />
-          ))}
+          {articles.map((item) => {
+            const mappedItem = {
+              ...item,
+              id: item.article_id,
+              publishedAt: item.published_at,
+            };
+
+            return (
+              <ArticleItem
+                key={mappedItem.id}
+                item={mappedItem}
+                savedArticles={articles}
+                toggleSave={toggleSave}
+              />
+            );
+          })}
         </ul>
       )}
     </div>
