@@ -1,10 +1,10 @@
 export const fetchArticles = async (query = "AI") => {
-  const res = await fetch(
-    `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&apiKey=${process.env.NEXT_PUBLIC_NEWS_API_KEY}`,
-  );
+  const res = await fetch(`/api/articles?q=${encodeURIComponent(query)}`);
   const data = await res.json();
-  console.log(data);
-  return data.articles
+
+  console.log("API RESPONSE:", data);
+
+  return (data.data?.articles || [])
     .filter((a) => a.url)
     .map((article) => ({
       id: article.url,
