@@ -1,9 +1,8 @@
 "use client";
 
 import { ArticleItem } from "./ArticleItem";
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { fetchArticles } from "@/lib/api";
-import { SavedArticlesContext } from "@/context/SavedArticlesContext";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
 import { Button } from "./ui/button";
@@ -11,9 +10,23 @@ import { Skeleton } from "./ui/skeleton";
 
 export const ArticlesClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const { savedArticles, setSavedArticles } = useContext(SavedArticlesContext);
   const [articles, setArticles] = useState([]);
+  const [savedArticles, setSavedArticles] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  // ✅ fetch saved articles from DB
+  useEffect(() => {
+    const fetchSaved = async () => {
+      const res = await fetch("/api/saved-articles");
+      const data = await res.json();
+      const normalized = (data.data || []).map((item) => ({
+        ...item,
+        id: item.article_id,
+      }));
+      setSavedArticles(normalized);
+    };
+    fetchSaved();
+  }, []);
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
@@ -25,8 +38,10 @@ export const ArticlesClient = () => {
 
   const toggleSave = async (item) => {
     const exists = savedArticles.some((a) => a.id === item.id);
-
     if (exists) {
+      await fetch(`/api/save-article?id=${item.id}`, {
+        method: "DELETE",
+      });
       setSavedArticles((prev) => prev.filter((a) => a.id !== item.id));
     } else {
       await fetch("/api/save-article", {
@@ -40,10 +55,6 @@ export const ArticlesClient = () => {
     }
   };
 
-  const term = searchTerm.trim().toLowerCase();
-
-  const filteredArticles = articles;
-
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Search */}
@@ -55,15 +66,15 @@ export const ArticlesClient = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSearch();
-            }
+            if (e.key === "Enter") handleSearch();
           }}
         />
         <Button onClick={handleSearch} disabled={loading}>
           {loading ? "Searching..." : "Search Article"}
         </Button>
       </div>
+
+      {/* Loading */}
       {loading ? (
         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -80,7 +91,7 @@ export const ArticlesClient = () => {
             </li>
           ))}
         </ul>
-      ) : filteredArticles.length === 0 && searchTerm.trim() !== "" ? (
+      ) : articles.length === 0 && searchTerm.trim() !== "" ? (
         <div className="flex items-center justify-center h-40 rounded-lg border border-border bg-card">
           <p className="text-sm text-muted-foreground">
             No results for <span className="font-medium">{searchTerm}</span>
@@ -88,7 +99,7 @@ export const ArticlesClient = () => {
         </div>
       ) : (
         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredArticles.map((item) => (
+          {articles.map((item) => (
             <ArticleItem
               key={item.id}
               item={item}

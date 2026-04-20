@@ -1,28 +1,39 @@
 "use client";
 
-import { SavedArticlesContext } from "@/context/SavedArticlesContext";
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
-import { useContext } from "react";
 
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useState, useEffect } from "react";
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 
 export default function DashboardHome() {
-  const { savedArticles } = useContext(SavedArticlesContext);
-
+  const [savedArticles, setSavedArticles] = useState([]);
   const totalSavedArticles = savedArticles.length;
-
   const saveArticles = savedArticles;
-
   const savedSources = saveArticles.map((article) => article.source);
   const uniqueSources = [...new Set(savedSources)];
-
   const allTopics = saveArticles.flatMap((article) => article.tags);
+
+  useEffect(() => {
+    const fetchSaved = async () => {
+      const res = await fetch("/api/saved-articles");
+      const data = await res.json();
+
+      const normalized = (data.data || []).map((item) => ({
+        ...item,
+        id: item.article_id,
+      }));
+
+      setSavedArticles(normalized);
+    };
+
+    fetchSaved();
+  }, []);
 
   const topicCount = {};
   allTopics.forEach((topic) => {

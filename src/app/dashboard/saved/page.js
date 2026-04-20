@@ -12,16 +12,35 @@ export default function SavedPage() {
     const fetchSaved = async () => {
       const res = await fetch("/api/saved-articles");
       const data = await res.json();
-      setArticles(data.data);
+      setArticles(
+        data.data.map((item) => ({
+          ...item,
+          id: item.article_id,
+          publishedAt: item.published_at,
+        })),
+      );
     };
     fetchSaved();
   }, []);
 
-  const toggleSave = (item) => {
-    setSavedArticles((prev) => prev.filter((a) => a.id !== item.id));
+  const toggleSave = async (item) => {
+    await fetch(`/api/save-article?id=${item.id}`, {
+      method: "DELETE",
+    });
+    setArticles((prev) => prev.filter((a) => a.id !== item.id));
   };
 
-  const handleClear = () => setSavedArticles([]);
+  const handleClear = async () => {
+    const res = await fetch("/api/save-article", {
+      method: "DELETE",
+    });
+    const data = await res.json();
+    if (data.error) {
+      console.log(data.error);
+      return;
+    }
+    setArticles([]);
+  };
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">

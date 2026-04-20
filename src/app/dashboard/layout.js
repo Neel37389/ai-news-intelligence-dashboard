@@ -7,7 +7,6 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { SavedArticlesContext } from "@/context/SavedArticlesContext";
 import { Separator } from "@/components/ui/separator";
 import {
   LayoutDashboard,
@@ -28,16 +27,17 @@ export default function DashboardLayout({ children }) {
   const [savedArticles, setSavedArticles] = useState([]);
   const router = useRouter();
 
-  useEffect(() => {
-    const stored = localStorage.getItem("savedArticles");
-    if (stored) setSavedArticles(JSON.parse(stored));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("savedArticles", JSON.stringify(savedArticles));
-  }, [savedArticles]);
-
   const pathname = usePathname();
+
+  useEffect(() => {
+    const fetchSaved = async () => {
+      const res = await fetch("/api/saved-articles");
+      const data = await res.json();
+      setSavedArticles(data.data || []);
+    };
+
+    fetchSaved();
+  }, [pathname]); // 🔥 key change
 
   const navItems = [
     { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
@@ -148,13 +148,7 @@ export default function DashboardLayout({ children }) {
           {/* Desktop Header */}
           <div className="hidden sm:block">{currentName?.name}</div>
         </header>
-        <main className="flex-1 p-3 sm:p-6">
-          <SavedArticlesContext.Provider
-            value={{ savedArticles, setSavedArticles }}
-          >
-            {children}
-          </SavedArticlesContext.Provider>
-        </main>
+        <main className="flex-1 p-3 sm:p-6">{children}</main>
       </div>
     </div>
   );
