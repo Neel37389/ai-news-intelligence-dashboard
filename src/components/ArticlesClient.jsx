@@ -7,14 +7,16 @@ import { Input } from "./ui/input";
 import { Search } from "lucide-react";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export const ArticlesClient = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [articles, setArticles] = useState([]);
   const [savedArticles, setSavedArticles] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // ✅ fetch saved articles from DB
   useEffect(() => {
     const fetchSaved = async () => {
       const res = await fetch("/api/saved-articles");
@@ -30,11 +32,21 @@ export const ArticlesClient = () => {
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
-    setLoading(true);
-    const data = await fetchArticles(searchTerm);
-    setArticles(data);
-    setLoading(false);
+    router.push(`/dashboard/articles?q=${encodeURIComponent(searchTerm)}`);
   };
+
+  const query = searchParams.get("q");
+  useEffect(() => {
+    if (!query) return;
+    const fetchData = async () => {
+      setLoading(true);
+      const data = await fetchArticles(query);
+      setArticles(data);
+      setLoading(false);
+    };
+    fetchData();
+    setSearchTerm(query);
+  }, [query]);
 
   const toggleSave = async (item) => {
     const exists = savedArticles.some((a) => a.id === item.id);
