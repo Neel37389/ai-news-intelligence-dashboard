@@ -3,6 +3,15 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Not authenticated" }), {
+        status: 401,
+      });
+    }
     const body = await req.json();
 
     const article = {
@@ -10,9 +19,9 @@ export async function POST(req) {
       title: body.title,
       source: body.source,
       summary: body.summary,
-      published_at: body.publishedAt, // important
+      published_at: body.publishedAt,
       tags: body.tags,
-      user_id: "temp-user", // add this for now
+      user_id: user.id,
     };
 
     const { data, error } = await supabase
@@ -33,6 +42,14 @@ export async function POST(req) {
 
 export async function DELETE(req) {
   try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+
     const { searchParams } = new URL(req.url);
     const article_id = searchParams.get("id");
 
@@ -40,7 +57,8 @@ export async function DELETE(req) {
       const { error } = await supabase
         .from("saved_articles")
         .delete()
-        .eq("article_id", article_id);
+        .eq("article_id", article_id)
+        .eq("user_id", user.id);
       if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
       }
@@ -49,7 +67,7 @@ export async function DELETE(req) {
     const { error } = await supabase
       .from("saved_articles")
       .delete()
-      .neq("article_id", "");
+      .eq("user_id", user.id);
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }

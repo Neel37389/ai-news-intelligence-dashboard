@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -26,8 +27,24 @@ export default function DashboardLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
   const [savedArticles, setSavedArticles] = useState([]);
   const router = useRouter();
-
   const pathname = usePathname();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        router.push("/login");
+      }
+    };
+    checkUser();
+  }, [router]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.replace("/login");
+  };
 
   useEffect(() => {
     const fetchSaved = async () => {
@@ -35,9 +52,8 @@ export default function DashboardLayout({ children }) {
       const data = await res.json();
       setSavedArticles(data.data || []);
     };
-
     fetchSaved();
-  }, [pathname]); // 🔥 key change
+  }, [pathname]);
 
   const navItems = [
     { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
@@ -146,7 +162,12 @@ export default function DashboardLayout({ children }) {
             </DropdownMenu>
           </div>
           {/* Desktop Header */}
-          <div className="hidden sm:block">{currentName?.name}</div>
+          <div className="hidden sm:flex items-center justify-between w-full">
+            <span>{currentName?.name}</span>
+            <Button variant="outline" onClick={handleLogout}>
+              LogOut
+            </Button>
+          </div>
         </header>
         <main className="flex-1 p-3 sm:p-6">{children}</main>
       </div>
