@@ -19,38 +19,50 @@ export default function LoginPage() {
     console.log(email, password);
   };
   return (
-    <FieldSet className="w-full max-w-xs">
-      <FieldGroup>
-        <Field>
-          <FieldLabel htmlFor="username">Email</FieldLabel>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            placeholder="johndoe@gmail.com"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <FieldDescription>Enter an Email for your account.</FieldDescription>
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="password">Password</FieldLabel>
-          <FieldDescription>
-            Must be at least 8 characters long.
-          </FieldDescription>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            placeholder="••••••••"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Field>
-        <Field orientation="responsive">
-          <Button type="submit" onClick={handleSubmit}>
-            Submit
-          </Button>
-        </Field>
-      </FieldGroup>
-    </FieldSet>
+    <div className="min-h-screen flex flex-col">
+      <div className="flex-1 flex items-center justify-center">
+        <div className="w-full max-w-sm space-y-6">
+          <div className="text-center space-y-2">
+            <h1 className="text-2xl font-semibold">AI News Dashboard</h1>
+            <p className="text-sm text-muted-foreground">
+              Login or create an account
+            </p>
+          </div>
+
+          <FieldSet>
+            <FieldGroup>
+              <Field>
+                <FieldLabel>Email</FieldLabel>
+                <Input
+                  type="email"
+                  value={email}
+                  placeholder="johndoe@gmail.com"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <FieldDescription>
+                  Enter an Email for your account.
+                </FieldDescription>
+              </Field>
+              <Field>
+                <FieldLabel>Password</FieldLabel>
+                <Input
+                  type="password"
+                  value={password}
+                  placeholder="••••••••"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <FieldDescription>
+                  Must be atleast 8 chartacters long.
+                </FieldDescription>
+              </Field>
+              <Button onClick={handleSubmit}>Submit</Button>
+            </FieldGroup>
+          </FieldSet>
+        </div>
+      </div>
+      <footer className="text-center text-sm text-muted-foreground py-4">
+        © 2026 Neel Patel
+      </footer>
+    </div>
   );
 }
