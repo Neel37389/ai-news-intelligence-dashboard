@@ -1,13 +1,14 @@
-export const metadata = {
-  title: "Articles",
-};
+export const dynamic = "force-dynamic";
 
+import { Suspense } from "react";
 import { ArticlesClient } from "@/components/ArticlesClient";
 
 export default function ArticlesPage() {
   return (
     <div>
-      <ArticlesClient />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ArticlesClient />
+      </Suspense>
     </div>
   );
 }
