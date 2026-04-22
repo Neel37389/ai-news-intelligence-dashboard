@@ -12,8 +12,13 @@ export default function SavedPage() {
     const fetchSaved = async () => {
       const res = await fetch("/api/saved-articles");
       const data = await res.json();
+      if (data.error) {
+        console.error(data.error);
+        setArticles([]);
+        return;
+      }
       setArticles(
-        data.data.map((item) => ({
+        (data.data || []).map((item) => ({
           ...item,
           id: item.article_id,
           publishedAt: item.published_at,

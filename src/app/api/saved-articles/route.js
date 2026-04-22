@@ -1,8 +1,11 @@
-import { supabase } from "@/lib/supabase";
 import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
 export async function GET(req) {
   try {
+    const supabase = createRouteHandlerClient({ cookies });
+
     const {
       data: { user },
     } = await supabase.auth.getUser();

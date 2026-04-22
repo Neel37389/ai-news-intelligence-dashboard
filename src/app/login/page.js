@@ -10,14 +10,40 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { supabase } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async () => {
-    console.log(email, password);
+    setLoading(true);
+    setError("");
+
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (loginError) {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      if (signUpError) {
+        setError(signUpError.message);
+        setLoading(false);
+        return;
+      }
+    }
+    setLoading(false);
+    router.replace("/dashboard");
   };
+
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-1 flex items-center justify-center">
@@ -55,7 +81,10 @@ export default function LoginPage() {
                   Must be atleast 8 chartacters long.
                 </FieldDescription>
               </Field>
-              <Button onClick={handleSubmit}>Submit</Button>
+              {error && <p className="text-sm text-red-500">{error}</p>}
+              <Button onClick={handleSubmit} disabled={loading}>
+                {loading ? "Loading..." : "Login / Signup"}
+              </Button>
             </FieldGroup>
           </FieldSet>
         </div>
