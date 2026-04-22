@@ -4,19 +4,31 @@ import { ArticleItem } from "@/components/ArticleItem";
 import { Button } from "@/components/ui/button";
 import { EmptySavedState } from "@/components/EmptySavedState";
 import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase/client";
 
 export default function SavedPage() {
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
     const fetchSaved = async () => {
-      const res = await fetch("/api/saved-articles");
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        setArticles([]);
+        return;
+      }
+
+      const res = await fetch(`/api/saved-articles?user_id=${user.id}`);
       const data = await res.json();
+
       if (data.error) {
         console.error(data.error);
         setArticles([]);
         return;
       }
+
       setArticles(
         (data.data || []).map((item) => ({
           ...item,
@@ -25,19 +37,41 @@ export default function SavedPage() {
         })),
       );
     };
+
     fetchSaved();
   }, []);
 
   const toggleSave = async (item) => {
-    await fetch(`/api/save-article?id=${item.id}`, {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+    await fetch("/api/save-article", {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        article_id: item.id,
+        user_id: user.id,
+      }),
     });
     setArticles((prev) => prev.filter((a) => a.id !== item.id));
   };
 
   const handleClear = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
     const res = await fetch("/api/save-article", {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: user.id,
+      }),
     });
     const data = await res.json();
     if (data.error) {

@@ -1,18 +1,8 @@
 import { NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { supabase } from "@/lib/supabase/client";
 
 export async function POST(req) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
     const body = await req.json();
 
     const article = {
@@ -22,7 +12,7 @@ export async function POST(req) {
       summary: body.summary,
       published_at: body.publishedAt,
       tags: body.tags,
-      user_id: user.id,
+      user_id: body.user_id,
     };
 
     const { data, error } = await supabase
@@ -30,10 +20,12 @@ export async function POST(req) {
       .insert([article]);
 
     if (error) {
+      console.error("POST ERROR:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json({ data }, { status: 200 });
   } catch (err) {
+    console.error("POST ERROR:", err);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 },
@@ -43,28 +35,14 @@ export async function POST(req) {
 
 export async function DELETE(req) {
   try {
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      { cookies },
-    );
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-
-    const { searchParams } = new URL(req.url);
-    const article_id = searchParams.get("id");
-
+    const body = await req.json();
+    const { article_id, user_id } = body;
     if (article_id) {
       const { error } = await supabase
         .from("saved_articles")
         .delete()
         .eq("article_id", article_id)
-        .eq("user_id", user.id);
+        .eq("user_id", user_id);
       if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
       }
@@ -73,7 +51,7 @@ export async function DELETE(req) {
     const { error } = await supabase
       .from("saved_articles")
       .delete()
-      .eq("user_id", user.id);
+      .eq("user_id", user_id);
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }

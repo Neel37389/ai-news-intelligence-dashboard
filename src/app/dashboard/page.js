@@ -10,6 +10,7 @@ import {
 import { useState, useEffect } from "react";
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { supabase } from "@/lib/supabase/client";
 
 export default function DashboardHome() {
   const [savedArticles, setSavedArticles] = useState([]);
@@ -21,17 +22,27 @@ export default function DashboardHome() {
 
   useEffect(() => {
     const fetchSaved = async () => {
-      const res = await fetch("/api/saved-articles");
-      const data = await res.json();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
+      if (!user) {
+        setSavedArticles([]);
+        return;
+      }
+      const res = await fetch(`/api/saved-articles?user_id=${user.id}`);
+      const data = await res.json();
+      if (data.error) {
+        console.error(data.error);
+        setSavedArticles([]);
+        return;
+      }
       const normalized = (data.data || []).map((item) => ({
         ...item,
         id: item.article_id,
       }));
-
       setSavedArticles(normalized);
     };
-
     fetchSaved();
   }, []);
 

@@ -8,6 +8,7 @@ import { Search } from "lucide-react";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 import { useSearchParams, useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase/client";
 
 export const ArticlesClient = () => {
   const router = useRouter();
@@ -49,10 +50,24 @@ export const ArticlesClient = () => {
   }, [query]);
 
   const toggleSave = async (item) => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      console.log("Not logged in");
+      return;
+    }
     const exists = savedArticles.some((a) => a.id === item.id);
     if (exists) {
-      await fetch(`/api/save-article?id=${item.id}`, {
+      await fetch("/api/save-article", {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          article_id: item.id,
+          user_id: user.id, // ✅ REQUIRED
+        }),
       });
       setSavedArticles((prev) => prev.filter((a) => a.id !== item.id));
     } else {
@@ -61,7 +76,10 @@ export const ArticlesClient = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(item),
+        body: JSON.stringify({
+          ...item,
+          user_id: user.id, // ✅ REQUIRED
+        }),
       });
       setSavedArticles((prev) => [...prev, item]);
     }
